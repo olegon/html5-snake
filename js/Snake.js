@@ -1,6 +1,7 @@
 (function() {
     'use strict';
 
+
     function Snake(body_size) {
         this.x = 150;
         this.y = 150;

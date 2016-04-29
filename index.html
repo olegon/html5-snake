@@ -33,7 +33,8 @@
 			});
 
 			var game_over_red = false;
-			game.setDrawCallback(function(dt, state, ctx) {
+			game.setDrawCallback(function(dt, state) {
+				var ctx = state.canvasCtx;
 				var snake = state.game.snake;
 				var fruit = state.game.fruit;
 
@@ -42,7 +43,7 @@
 						game_over_red = true;
 						ctx.fillText('Game Over!', 10, 20);
 					}
-
+					
 					return;
 				}
 
@@ -50,6 +51,7 @@
 					// move only before draw
 					snake.move();
 				}
+
 
 
 				ctx.save();

@@ -5,9 +5,7 @@
         this.canvasId = canvasId;
 
         this.state = {
-            engine: {
-
-            },
+            min_draw_time: 100,
             game: {
 
             }
@@ -17,10 +15,10 @@
     Game.GAME_OVER = 'game_over';
     Game.GAME_WAITING_TO_START = 'game_waiting_to_start';
     Game.GAME_RUNNING = 'game_running';
-    
+
     Game.prototype.init = function(initFunction) {
-        this.state.engine.canvasElement = window.document.getElementById(this.canvasId);
-        this.state.engine.canvasCtx = this.state.canvasElement.getContext('2d');
+        this.state.canvasElement = window.document.getElementById(this.canvasId);
+        this.state.canvasCtx = this.state.canvasElement.getContext('2d');
 
         this.state.game.game_status = Game.GAME_WAITING_TO_START;
 
@@ -30,7 +28,9 @@
     Game.prototype.start = function() {
         var self = this;
 
-        self.state.keyboard = {
+        var state = this.state;
+
+        state.keyboard = {
             space: false,
             left: false,
             right: false,
@@ -41,34 +41,35 @@
         (function inputEventSetup() {
             window.addEventListener('keydown', function(e) {
                 if (e.keyCode === 37) {
-                    self.state.keyboard.left = true;
+                    state.keyboard.left = true;
                 } else if (e.keyCode === 38) {
-                    self.state.keyboard.up = true;
+                    state.keyboard.up = true;
                 } else if (e.keyCode === 39) {
-                    self.state.keyboard.right = true;
+                    state.keyboard.right = true;
                 } else if (e.keyCode === 40) {
-                    self.state.keyboard.down = true;
+                    state.keyboard.down = true;
                 } else if (e.keyCode === 32) {
-                    self.state.keyboard.space = true;
+                    state.keyboard.space = true;
                 }
             });
 
             window.addEventListener('keyup', function(e) {
                 if (e.keyCode === 37) {
-                    self.state.keyboard.left = false;
+                    state.keyboard.left = false;
                 } else if (e.keyCode === 38) {
-                    self.state.keyboard.up = false;
+                    state.keyboard.up = false;
                 } else if (e.keyCode === 39) {
-                    self.state.keyboard.right = false;
+                    state.keyboard.right = false;
                 } else if (e.keyCode === 40) {
-                    self.state.keyboard.down = false;
+                    state.keyboard.down = false;
                 } else if (e.keyCode === 32) {
-                    self.state.keyboard.space = false;
+                    state.keyboard.space = false;
                 }
             });
         })();
 
         (function gameLoopSetup() {
+            var accTime = 0;
             var previousTime = performance.now();
 
             function gameloop(currentTime) {
@@ -76,8 +77,15 @@
                 var dt = currentTime - previousTime;
                 previousTime = currentTime;
 
+                accTime += dt;
+
                 if (self.updateCallback) self.updateCallback(dt, state);
-                if (self.drawCallback) self.drawCallback(dt, state, self.state.engine.canvasCtx);
+
+                if (accTime > state.min_draw_time) {
+                    accTime -= state.min_draw_time;
+
+                    if (self.drawCallback) self.drawCallback(dt, state);
+                }
 
                 window.requestAnimationFrame(gameloop);
             }
