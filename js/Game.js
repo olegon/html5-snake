@@ -17,9 +17,6 @@
             'getCanvasElement': function () {
                 return self.coreState.canvasElement;
             },
-            'game': {
-
-            }
         };
     }
 
@@ -30,7 +27,16 @@
 
     Game.prototype.init = function(initFunction) {
         this.coreState.canvasElement = window.document.getElementById(this.canvasId);
+
+        if (this.coreState.canvasElement == null) {
+            throw new Error('O elemento Canvas cujo id é "' + this.canvasId + '" não foi encontrado.');
+        }
+
         this.coreState.canvasCtx = this.coreState.canvasElement.getContext('2d');
+
+        if (this.coreState.canvasCtx == null) {
+            throw new Error('Não foi possível obter o contexto 2d do elemento Canvas.');
+        }
 
         this.state.game_status = Game.GAME_WAITING_TO_START;
 

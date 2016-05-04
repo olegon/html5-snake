@@ -1,3 +1,32 @@
+body {
+    text-align: center;
+
+    font-family: "Arial", sans-serif;
+    font-size: 16px;
+    line-height: 1.5em;
+}
+
+a {
+    color: #0275D8;
+}
+
+a:hover {
+    color: #FF9900;
+}
+
 .main-canvas {
-    border: 1px solid black;
+    border: 1px solid #CCC;
+}
+
+.instrucao {
+    font-size: 0.8em;
+}
+
+.github {
+
+}
+
+.github .icone {
+    vertical-align: middle;
+    margin: 0 4px;
 }
