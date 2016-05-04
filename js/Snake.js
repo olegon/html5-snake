@@ -23,14 +23,16 @@
     Snake.prototype.move = function() {
         var dx = 0,
             dy = 0;
+            
+        this.currentDirection = this.nextDirection;
 
-        if (this.currentMoviment == Snake.DIRECTION_RIGHT) {
+        if (this.currentDirection == Snake.DIRECTION_RIGHT) {
             dx = this.body_size;
-        } else if (this.currentMoviment == Snake.DIRECTION_LEFT) {
+        } else if (this.currentDirection == Snake.DIRECTION_LEFT) {
             dx = -this.body_size;
-        } else if (this.currentMoviment == Snake.DIRECTION_UP) {
+        } else if (this.currentDirection == Snake.DIRECTION_UP) {
             dy = -this.body_size;
-        } else if (this.currentMoviment == Snake.DIRECTION_DOWN) {
+        } else if (this.currentDirection == Snake.DIRECTION_DOWN) {
             dy = this.body_size;
         }
 
@@ -50,23 +52,23 @@
     };
 
     Snake.prototype.setMoviment = function(direction) {
-        if (direction == Snake.DIRECTION_LEFT && this.currentMoviment == Snake.DIRECTION_RIGHT) {
+        if (direction == Snake.DIRECTION_LEFT && this.currentDirection == Snake.DIRECTION_RIGHT) {
             return;
         }
 
-        if (direction == Snake.DIRECTION_RIGHT && this.currentMoviment == Snake.DIRECTION_LEFT) {
+        if (direction == Snake.DIRECTION_RIGHT && this.currentDirection == Snake.DIRECTION_LEFT) {
             return;
         }
 
-        if (direction == Snake.DIRECTION_DOWN && this.currentMoviment == Snake.DIRECTION_UP) {
+        if (direction == Snake.DIRECTION_DOWN && this.currentDirection == Snake.DIRECTION_UP) {
             return;
         }
 
-        if (direction == Snake.DIRECTION_UP && this.currentMoviment == Snake.DIRECTION_DOWN) {
+        if (direction == Snake.DIRECTION_UP && this.currentDirection == Snake.DIRECTION_DOWN) {
             return;
         }
 
-        this.currentMoviment = direction;
+        this.nextDirection = direction;
     };
 
     window.Snake = Snake;
