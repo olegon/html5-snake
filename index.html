@@ -10,7 +10,20 @@
 </head>
 
 <body>
-	<canvas id="mainCanvas" class="main-canvas" width="600" height="480"></canvas>
+	<h1>Snake</h1>
+
+	<canvas id="mainCanvas" class="main-canvas" width="600" height="480">
+		<p>Seu navagador não suporta o elemento canvas. :(</p>
+	</canvas>
+
+	<p class="instrucao">Use as setas para jogar.</p>
+	<p class="github">
+		<svg class="icone" height="24" version="1.1" viewBox="0 0 16 16" width="24">
+			<path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59 0.4 0.07 0.55-0.17 0.55-0.38 0-0.19-0.01-0.82-0.01-1.49-2.01 0.37-2.53-0.49-2.69-0.94-0.09-0.23-0.48-0.94-0.82-1.13-0.28-0.15-0.68-0.52-0.01-0.53 0.63-0.01 1.08 0.58 1.23 0.82 0.72 1.21 1.87 0.87 2.33 0.66 0.07-0.52 0.28-0.87 0.51-1.07-1.78-0.2-3.64-0.89-3.64-3.95 0-0.87 0.31-1.59 0.82-2.15-0.08-0.2-0.36-1.02 0.08-2.12 0 0 0.67-0.21 2.2 0.82 0.64-0.18 1.32-0.27 2-0.27 0.68 0 1.36 0.09 2 0.27 1.53-1.04 2.2-0.82 2.2-0.82 0.44 1.1 0.16 1.92 0.08 2.12 0.51 0.56 0.82 1.27 0.82 2.15 0 3.07-1.87 3.75-3.65 3.95 0.29 0.25 0.54 0.73 0.54 1.48 0 1.07-0.01 1.93-0.01 2.2 0 0.21 0.15 0.46 0.55 0.38C13.71 14.53 16 11.53 16 8 16 3.58 12.42 0 8 0z"></path>
+		</svg> <a href="https://github.com/olegon/html5-snake">https://github.com/olegon/html5-snake</a>
+	</p>
+
+
 
 	<script src="js/Game.js"></script>
 	<script src="js/Rectangle.js"></script>
@@ -25,29 +38,43 @@
 			var game = new Game(CANVAS_ELEMENT_ID);
 
 			game.init(function(state) {
+				state.game = {
+					'timeElapsedSinceLastRender': 0
+				};
+
 				var SNAKE_BODY_SIZE = 10;
+				var canvasElement = state.getCanvasElement();
 
 				state.game.snake = new Snake(SNAKE_BODY_SIZE);
 
-				state.game.fruit = Rectangle.createAtRandonPosition(state.canvasElement.width, state.canvasElement.height, SNAKE_BODY_SIZE, SNAKE_BODY_SIZE);
+				state.game.fruit = Rectangle.createAtRandonPosition(canvasElement.width, canvasElement.height, SNAKE_BODY_SIZE, SNAKE_BODY_SIZE);
 			});
 
-			var game_over_red = false;
-			game.setDrawCallback(function(dt, state) {
-				var ctx = state.canvasCtx;
-				var snake = state.game.snake;
-				var fruit = state.game.fruit;
 
-				if (state.game.game_status == Game.GAME_OVER) {
-					if (game_over_red == false) {
-						game_over_red = true;
-						ctx.fillText('Game Over!', 10, 20);
-					}
-					
+			game.setDrawCallback(function(dt, state) {
+				if (state.game_status == Game.GAME_OVER) {
 					return;
 				}
 
-				if (state.game.game_status != Game.GAME_WAITING_TO_START) {
+				if (state.game.timeElapsedSinceLastRender < 100) {
+					return;
+				}
+
+				state.game.timeElapsedSinceLastRender -= 100;
+
+				var ctx = state.get2dContext();
+
+				var snake = state.game.snake;
+				var fruit = state.game.fruit;
+
+				if (state.game_status == Game.GAME_WILL_END) {
+					ctx.fillText('Game Over!', 10, 20);
+					state.game_status = Game.GAME_OVER;
+
+					return;
+				}
+
+				if (state.game_status != Game.GAME_WAITING_TO_START) {
 					// move only before draw
 					snake.move();
 				}
@@ -70,19 +97,29 @@
 			});
 
 			game.setUpdateCallback(function(dt, state) {
+				if (state.game_status == Game.GAME_OVER) {
+					return;
+				}
+
+				state.game.timeElapsedSinceLastRender += dt;
+
 				var snake = state.game.snake;
 				var fruit = state.game.fruit;
+
+				var canvasElement = state.getCanvasElement();
+				var canvasWidth = canvasElement.width;
+				var canvasHeight = canvasElement.height;
 
 				var head = snake.body[0];
 
 				(function checkBoudaries() {
 					var MIN_X = 0,
-						MAX_X = state.canvasElement.width,
+						MAX_X = canvasWidth,
 						MIN_Y = 0,
-						MAX_Y = state.canvasElement.height;
+						MAX_Y = canvasHeight;
 
 					if (head.x < MIN_X || head.y < MIN_Y || (head.x + head.width) > MAX_X || (head.y + head.height) > MAX_Y) {
-						state.game.game_status = Game.GAME_OVER;
+						state.game_status = Game.GAME_WILL_END;
 					}
 				})();
 
@@ -91,34 +128,34 @@
 						var rect = snake.body[i];
 
 						if (head.x == rect.x && head.y == rect.y) {
-							state.game.game_status = Game.GAME_OVER;
+							state.game_status = Game.GAME_WILL_END;
 						}
 					}
 				})();
 
 
-				if (state.game.game_status == Game.GAME_OVER) {
+				if (state.game_status == Game.GAME_WILL_END) {
 					return;
 				}
 
 				if (state.keyboard.left == true) {
 					snake.setMoviment(Snake.DIRECTION_LEFT);
-					state.game.game_status = Game.GAME_RUNNING;
+					state.game_status = Game.GAME_RUNNING;
 				} else if (state.keyboard.right == true) {
 					snake.setMoviment(Snake.DIRECTION_RIGHT);
-					state.game.game_status = Game.GAME_RUNNING;
+					state.game_status = Game.GAME_RUNNING;
 				} else if (state.keyboard.up == true) {
 					snake.setMoviment(Snake.DIRECTION_UP);
-					state.game.game_status = Game.GAME_RUNNING;
+					state.game_status = Game.GAME_RUNNING;
 				} else if (state.keyboard.down == true) {
 					snake.setMoviment(Snake.DIRECTION_DOWN);
-					state.game.game_status = Game.GAME_RUNNING;
+					state.game_status = Game.GAME_RUNNING;
 				}
 
 				if (head.x == fruit.x && head.y == fruit.y) {
 					snake.eated = fruit;
 
-					state.game.fruit = Rectangle.createAtRandonPosition(state.canvasElement.width, state.canvasElement.height, snake.body_size, snake.body_size);
+					state.game.fruit = Rectangle.createAtRandonPosition(canvasWidth, canvasHeight, snake.body_size, snake.body_size);
 				}
 			});
 

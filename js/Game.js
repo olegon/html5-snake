@@ -2,25 +2,43 @@
     'use strict';
 
     function Game(canvasId) {
-        this.canvasId = canvasId;
+        var self = this;
 
-        this.state = {
-            min_draw_time: 100,
-            game: {
+        self.canvasId = canvasId;
 
-            }
+        self.coreState = {
+
+        };
+
+        self.state = {
+            'get2dContext': function() {
+                return self.coreState.canvasCtx;
+            },
+            'getCanvasElement': function() {
+                return self.coreState.canvasElement;
+            },
         };
     }
 
     Game.GAME_OVER = 'game_over';
+    Game.GAME_WILL_END = 'game_will_end';
     Game.GAME_WAITING_TO_START = 'game_waiting_to_start';
     Game.GAME_RUNNING = 'game_running';
 
     Game.prototype.init = function(initFunction) {
-        this.state.canvasElement = window.document.getElementById(this.canvasId);
-        this.state.canvasCtx = this.state.canvasElement.getContext('2d');
+        this.coreState.canvasElement = window.document.getElementById(this.canvasId);
 
-        this.state.game.game_status = Game.GAME_WAITING_TO_START;
+        if (this.coreState.canvasElement == null) {
+            throw new Error('O elemento Canvas cujo id é "' + this.canvasId + '" não foi encontrado.');
+        }
+
+        this.coreState.canvasCtx = this.coreState.canvasElement.getContext('2d');
+
+        if (this.coreState.canvasCtx == null) {
+            throw new Error('Não foi possível obter o contexto 2d do elemento Canvas.');
+        }
+
+        this.state.game_status = Game.GAME_WAITING_TO_START;
 
         if (initFunction) initFunction(this.state);
     };
@@ -77,15 +95,8 @@
                 var dt = currentTime - previousTime;
                 previousTime = currentTime;
 
-                accTime += dt;
-
-                if (self.updateCallback) self.updateCallback(dt, state);
-
-                if (accTime > state.min_draw_time) {
-                    accTime -= state.min_draw_time;
-
-                    if (self.drawCallback) self.drawCallback(dt, state);
-                }
+                if (self.updateCallback) self.updateCallback(dt, self.state);
+                if (self.drawCallback) self.drawCallback(dt, self.state);
 
                 window.requestAnimationFrame(gameloop);
             }
