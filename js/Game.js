@@ -2,27 +2,37 @@
     'use strict';
 
     function Game(canvasId) {
-        this.canvasId = canvasId;
+        var self = this;
 
-        this.state = {
-            engine: {
+        self.canvasId = canvasId;
 
+        self.coreState = {
+
+        };
+
+        self.state = {
+            'get2dContext': function () {
+                return self.coreState.canvasCtx;
             },
-            game: {
+            'getCanvasElement': function () {
+                return self.coreState.canvasElement;
+            },
+            'game': {
 
             }
         };
     }
 
     Game.GAME_OVER = 'game_over';
+    Game.GAME_WILL_END = 'game_will_end';
     Game.GAME_WAITING_TO_START = 'game_waiting_to_start';
     Game.GAME_RUNNING = 'game_running';
-    
-    Game.prototype.init = function(initFunction) {
-        this.state.engine.canvasElement = window.document.getElementById(this.canvasId);
-        this.state.engine.canvasCtx = this.state.canvasElement.getContext('2d');
 
-        this.state.game.game_status = Game.GAME_WAITING_TO_START;
+    Game.prototype.init = function(initFunction) {
+        this.coreState.canvasElement = window.document.getElementById(this.canvasId);
+        this.coreState.canvasCtx = this.coreState.canvasElement.getContext('2d');
+
+        this.state.game_status = Game.GAME_WAITING_TO_START;
 
         if (initFunction) initFunction(this.state);
     };
@@ -76,8 +86,8 @@
                 var dt = currentTime - previousTime;
                 previousTime = currentTime;
 
-                if (self.updateCallback) self.updateCallback(dt, state);
-                if (self.drawCallback) self.drawCallback(dt, state, self.state.engine.canvasCtx);
+                if (self.updateCallback) self.updateCallback(dt, self.state);
+                if (self.drawCallback) self.drawCallback(dt, self.state);
 
                 window.requestAnimationFrame(gameloop);
             }
