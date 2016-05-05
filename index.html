@@ -83,7 +83,9 @@
 
 				ctx.save();
 
-				ctx.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
+				ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+				ctx.fillRect(0, 0, mainCanvas.width, mainCanvas.height);
+				ctx.strokeStyle = 'rgba(0, 0, 0, 1.0)';
 
 				for (var i = 0; i < snake.body.length; i++) {
 					var block = snake.body[i];
