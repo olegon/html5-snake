@@ -1,6 +1,5 @@
 body {
     text-align: center;
-
     font-family: "Arial", sans-serif;
     font-size: 16px;
     line-height: 1.5em;
@@ -22,9 +21,15 @@ a:hover {
     font-size: 0.8em;
 }
 
-.github {
+    .instrucao .hot-tip {
+        
+    }
 
-}
+    .instrucao .hot-tip b {
+        color: #C00;
+        font-size: 1.15em;
+        transform: rotate(60deg);
+    }
 
 .github .icone {
     vertical-align: middle;
