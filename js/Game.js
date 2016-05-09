@@ -7,18 +7,6 @@ var Game = (function() {
         GAME_WAITING_TO_START: 'game_waiting_to_start',
         GAME_RUNNING: 'game_running',
 
-        coreState: {
-
-        },
-        state: {
-            get2dContext: function() {
-                return this.coreState.canvasCtx;
-            },
-            getCanvasElement: function() {
-                return this.coreState.canvasElement;
-            },
-        },
-
         init: function(initFunction) {
             this.coreState.canvasElement = window.document.getElementById(this.canvasId);
 
@@ -117,6 +105,19 @@ var Game = (function() {
 
     return function(canvasId) {
         var game = Object.create(proto);
+
+        game.coreState = {
+
+        };
+
+        game.state = {
+            get2dContext: function() {
+                return game.coreState.canvasCtx;
+            },
+            getCanvasElement: function() {
+                return game.coreState.canvasElement;
+            },
+        };
 
         game.canvasId = canvasId;
 

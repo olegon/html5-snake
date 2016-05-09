@@ -13,6 +13,10 @@ var Snake = (function() {
 
             this.currentDirection = this.nextDirection;
 
+            if (this.currentDirection == null) {
+                return;
+            }
+
             if (this.currentDirection == this.DIRECTION_RIGHT) {
                 dx = this.body_size;
             } else if (this.currentDirection == this.DIRECTION_LEFT) {
