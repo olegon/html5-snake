@@ -1,21 +1,16 @@
 var Rectangle = (function() {
     'use strict';
 
-    var proto = {
-
-    };
-
     var Rectangle = function(x, y, width, height) {
-        // var rectangle = Object.create(proto);
-        var rectangle = {};
+        if (!(this instanceof Rectangle)) {
+            return new Rectangle(x, y, width, height);
+        }
 
-        rectangle.x = x;
-        rectangle.y = y;
+        this.x = x;
+        this.y = y;
 
-        rectangle.width = width;
-        rectangle.height = height;
-
-        return rectangle;
+        this.width = width;
+        this.height = height;
     };
 
     Rectangle.createAtRandonPosition = function(max_x, max_y, width, height) {

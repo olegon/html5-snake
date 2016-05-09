@@ -144,7 +144,7 @@
         if (head.x == fruit.x && head.y == fruit.y) {
             snake.eated = fruit;
 
-            state.game.fruit = Rectangle.createAtRandonPosition(canvasWidth, canvasHeight, snake.body_size, snake.body_size);
+            state.game.fruit = Rectangle.createAtRandonPosition(canvasWidth, canvasHeight, snake.bodySize, snake.bodySize);
         }
     });
 
