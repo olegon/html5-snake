@@ -1,13 +1,21 @@
-(function() {
+var Rectangle = (function() {
     'use strict';
 
-    function Rectangle(x, y, width, height) {
-        this.x = x;
-        this.y = y;
+    var proto = {
 
-        this.width = width;
-        this.height = height;
-    }
+    };
+
+    var Rectangle = function(x, y, width, height) {
+        var rectangle = {};
+
+        rectangle.x = x;
+        rectangle.y = y;
+
+        rectangle.width = width;
+        rectangle.height = height;
+
+        return rectangle;
+    };
 
     Rectangle.createAtRandonPosition = function(max_x, max_y, width, height) {
         var rnd_x = parseInt(Math.random() * 50000) % max_x;
@@ -17,15 +25,9 @@
         var x = rnd_x - (rnd_x % width);
         var y = rnd_y - (rnd_y % height);
 
-        return new Rectangle(x, y, width, height);
+        return Rectangle(x, y, width, height);
     };
 
-    Rectangle.prototype.checkCollision = function(rect) {
-        if (!(rect instanceof Rectangle)) {
-            throw new TypeError("Rectangle.checkCollision(rect): rect ins't a Rectangle.");
-        }
-    };
-
-    window.Rectangle = Rectangle;
+    return Rectangle;
 
 })();

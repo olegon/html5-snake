@@ -47,7 +47,7 @@
 				var SNAKE_BODY_SIZE = 10;
 				var canvasElement = game.coreState.canvasElement;
 
-				state.game.snake = new Snake(SNAKE_BODY_SIZE);
+				state.game.snake = Snake(SNAKE_BODY_SIZE);
 
 				state.game.fruit = Rectangle.createAtRandonPosition(canvasElement.width, canvasElement.height, SNAKE_BODY_SIZE, SNAKE_BODY_SIZE);
 			});
@@ -98,7 +98,6 @@
 					ctx.fillStyle = 'rgba(255, 255, 255, 1.0)';
 					ctx.strokeStyle = 'rgba(0, 0, 0, 1.0)';
 				}
-
 
 
 				ctx.fillRect(0, 0, mainCanvas.width, mainCanvas.height);
@@ -160,16 +159,16 @@
 				}
 
 				if (state.keyboard.left == true) {
-					snake.setMoviment(Snake.DIRECTION_LEFT);
+					snake.setMoviment(snake.DIRECTION_LEFT);
 					state.game_status = game.GAME_RUNNING;
 				} else if (state.keyboard.right == true) {
-					snake.setMoviment(Snake.DIRECTION_RIGHT);
+					snake.setMoviment(snake.DIRECTION_RIGHT);
 					state.game_status = game.GAME_RUNNING;
 				} else if (state.keyboard.up == true) {
-					snake.setMoviment(Snake.DIRECTION_UP);
+					snake.setMoviment(snake.DIRECTION_UP);
 					state.game_status = game.GAME_RUNNING;
 				} else if (state.keyboard.down == true) {
-					snake.setMoviment(Snake.DIRECTION_DOWN);
+					snake.setMoviment(snake.DIRECTION_DOWN);
 					state.game_status = game.GAME_RUNNING;
 				}
 

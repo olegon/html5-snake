@@ -1,7 +1,7 @@
 var Game = (function() {
     'use strict';
 
-    var engine = {
+    var proto = {
         GAME_OVER: 'game_over',
         GAME_WILL_END: 'game_will_end',
         GAME_WAITING_TO_START: 'game_waiting_to_start',
@@ -116,7 +116,7 @@ var Game = (function() {
     };
 
     return function(canvasId) {
-        var game = Object.create(engine);
+        var game = Object.create(proto);
 
         game.canvasId = canvasId;
 
