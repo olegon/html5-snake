@@ -57,6 +57,12 @@
         };
 
         (function inputEventSetup() {
+            function preventScrolling(e) {
+                if ([37, 38, 39, 40, 32].indexOf(e.keyCode) > -1) {
+                    e.preventDefault();
+                }
+            }
+
             window.addEventListener('keydown', function(e) {
                 if (e.keyCode === 37) {
                     state.keyboard.left = true;
@@ -69,6 +75,8 @@
                 } else if (e.keyCode === 32) {
                     state.keyboard.space = true;
                 }
+
+                preventScrolling(e);
             });
 
             window.addEventListener('keyup', function(e) {
@@ -83,6 +91,8 @@
                 } else if (e.keyCode === 32) {
                     state.keyboard.space = false;
                 }
+
+                preventScrolling(e);
             });
         })();
 
