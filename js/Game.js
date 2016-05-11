@@ -30,6 +30,7 @@ var Game = (function() {
     Game.prototype.GAME_WILL_END = 'GAME_WILL_END';
     Game.prototype.GAME_WAITING_TO_START = 'GAME_WAITING_TO_START';
     Game.prototype.GAME_RUNNING = 'GAME_RUNNING';
+    Game.prototype.GAME_PAUSED = 'GAME_PAUSED';
 
     Game.prototype.init = function(initFunction) {
         this.coreState.canvasElement = window.document.getElementById(this.canvasId);
@@ -82,6 +83,10 @@ var Game = (function() {
                     state.keyboard.space = true;
                 }
 
+                if (self.keydownCallback) {
+                    self.keydownCallback(e, state);
+                }
+
                 preventScrolling(e);
             });
 
@@ -119,6 +124,10 @@ var Game = (function() {
 
             window.requestAnimationFrame(gameloop);
         })();
+    };
+
+    Game.prototype.setKeydownCallback = function (keydownCallback) {
+        this.keydownCallback = keydownCallback;
     };
 
     Game.prototype.setUpdateCallback = function (updateCallback) {

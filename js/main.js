@@ -22,9 +22,7 @@
 
 
     game.setDrawCallback(function(dt, state) {
-        if (state.game_status == game.GAME_OVER) {
-            return;
-        }
+
 
         var minTimeToDraw = state.game.minTimeToDraw;
         if (state.game.fastMode) {
@@ -37,6 +35,11 @@
 
 
         state.game.timeElapsedSinceLastRender -= minTimeToDraw;
+
+        if (state.game_status == game.GAME_OVER
+            || state.game_status == game.GAME_PAUSED) {
+            return;
+        }
 
         var ctx = state.get2dContext();
 
@@ -77,6 +80,18 @@
         ctx.strokeRect(fruit.x, fruit.y, fruit.width, fruit.height);
 
         ctx.restore();
+    });
+
+    game.setKeydownCallback(function (e, state) {
+        // ESC
+        if (e.keyCode == 27) {
+            if (state.game_status == game.GAME_RUNNING) {
+                state.game_status = game.GAME_PAUSED;
+            }
+            else if (state.game_status == game.GAME_PAUSED) {
+                state.game_status = game.GAME_RUNNING;
+            }
+        };
     });
 
     game.setUpdateCallback(function(dt, state) {
