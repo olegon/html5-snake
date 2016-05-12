@@ -35,6 +35,10 @@ var Game = (function() {
     Game.prototype.init = function(initFunction) {
         this.coreState.canvasElement = window.document.getElementById(this.canvasId);
 
+        var width = Math.min(this.coreState.canvasElement.width, window.innerWidth - 80);
+
+        this.coreState.canvasElement.width = width;
+
         if (this.coreState.canvasElement == null) {
             throw new Error('O elemento Canvas cujo id é "' + this.canvasId + '" não foi encontrado.');
         }
