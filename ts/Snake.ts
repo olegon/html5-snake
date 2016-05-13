@@ -57,7 +57,7 @@ class Snake {
         }
 
 
-        for (var i = this.body.length - 1; i > 0; i--) {
+        for (let i = this.body.length - 1; i > 0; i--) {
             this.body[i].x = this.body[i - 1].x;
             this.body[i].y = this.body[i - 1].y;
         }

@@ -6,7 +6,23 @@ enum GameStatus {
     GAME_PAUSED
 }
 
-class Game {
+class Keyboad {
+    left: boolean;
+    right: boolean;
+    up: boolean;
+    down: boolean;
+    space: boolean;
+}
+
+class CoreState {
+    keyboard: Keyboad;
+
+    constructor() {
+        this.keyboard = new Keyboad();
+    }
+}
+
+class Game<T> {
     canvasId: string;
     canvasElement: HTMLCanvasElement;
     canvasContext: CanvasRenderingContext2D;
@@ -15,10 +31,11 @@ class Game {
     updateCallback: Function;
     drawCallback: Function;
 
-    coreState: any;
+    coreState: CoreState;
 
-    public state: any;
-    public gameStatus: GameStatus;
+    gameState: T;
+
+    gameStatus: GameStatus;
 
     constructor (canvasId: string) {
         this.canvasId = canvasId;
@@ -35,31 +52,21 @@ class Game {
             throw new Error("O elemento não existe.");
         }
 
-        this.state = {
-            game: {
-
-            }
-        };
+        this.coreState = new CoreState();
     }
 
     init(initCallback: Function) {
         this.gameStatus = GameStatus.GAME_WAITING_TO_START;
 
         if (initCallback != null) {
-            initCallback(this.state);
+            initCallback(this.gameState);
         }
     }
 
     start () {
         let self = this;
 
-        this.state.keyboard = {
-            space: false,
-            left: false,
-            right: false,
-            up: false,
-            down: false
-        };
+        this.coreState;
 
         (function inputEventSetup() {
             function preventScrolling(e) {
@@ -70,19 +77,19 @@ class Game {
 
             window.addEventListener('keydown', function(e) {
                 if (e.keyCode === 37) {
-                    self.state.keyboard.left = true;
+                    self.coreState.keyboard.left = true;
                 } else if (e.keyCode === 38) {
-                    self.state.keyboard.up = true;
+                    self.coreState.keyboard.up = true;
                 } else if (e.keyCode === 39) {
-                    self.state.keyboard.right = true;
+                    self.coreState.keyboard.right = true;
                 } else if (e.keyCode === 40) {
-                    self.state.keyboard.down = true;
+                    self.coreState.keyboard.down = true;
                 } else if (e.keyCode === 32) {
-                    self.state.keyboard.space = true;
+                    self.coreState.keyboard.space = true;
                 }
 
                 if (self.keydownCallback) {
-                    self.keydownCallback(e, self.state);
+                    self.keydownCallback(e, self.gameState);
                 }
 
                 preventScrolling(e);
@@ -90,15 +97,15 @@ class Game {
 
             window.addEventListener('keyup', function(e) {
                 if (e.keyCode === 37) {
-                    self.state.keyboard.left = false;
+                    self.coreState.keyboard.left = false;
                 } else if (e.keyCode === 38) {
-                    self.state.keyboard.up = false;
+                    self.coreState.keyboard.up = false;
                 } else if (e.keyCode === 39) {
-                    self.state.keyboard.right = false;
+                    self.coreState.keyboard.right = false;
                 } else if (e.keyCode === 40) {
-                    self.state.keyboard.down = false;
+                    self.coreState.keyboard.down = false;
                 } else if (e.keyCode === 32) {
-                    self.state.keyboard.space = false;
+                    self.coreState.keyboard.space = false;
                 }
 
                 preventScrolling(e);
@@ -114,8 +121,8 @@ class Game {
                 let dt = currentTime - previousTime;
                 previousTime = currentTime;
 
-                if (self.updateCallback) self.updateCallback(dt, self.state);
-                if (self.drawCallback) self.drawCallback(dt, self.state);
+                if (self.updateCallback) self.updateCallback(dt, self.gameState);
+                if (self.drawCallback) self.drawCallback(dt, self.gameState);
 
                 window.requestAnimationFrame(gameloop);
             }

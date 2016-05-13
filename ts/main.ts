@@ -1,44 +1,59 @@
+class GameState {
+    timeElapsedSinceLastRender: number;
+    minTimeToDraw: number;
+    fastMode: boolean;
+
+    snake: Snake;
+    fruit: Rectangle;
+
+
+    constructor () {
+
+    }
+}
+
 window.addEventListener('load', function () {
     let CANVAS_ELEMENT_ID = 'mainCanvas';
 
-    let game = new Game(CANVAS_ELEMENT_ID);
+    let game = new Game<GameState>(CANVAS_ELEMENT_ID);
+    game.gameState = new GameState();
 
-    game.init(function (state: any) {
-        state.game = {
-            'timeElapsedSinceLastRender': 0,
-            'minTimeToDraw': 100,
-            'fastMode': false
-        };
+    game.init(function (gameState: GameState) {
+
+
+        gameState.timeElapsedSinceLastRender = 0;
+        gameState.minTimeToDraw = 100;
+        gameState.fastMode = false;
 
         let SNAKE_BODY_SIZE = 10;
         let canvasElement = game.canvasElement;
 
-        state.game.snake = new Snake(SNAKE_BODY_SIZE);
+        gameState.snake = new Snake(SNAKE_BODY_SIZE);
 
-        state.game.fruit = Rectangle.createAtRandonPosition(canvasElement.width, canvasElement.height, SNAKE_BODY_SIZE, SNAKE_BODY_SIZE);
+        gameState.fruit = Rectangle.createAtRandonPosition(canvasElement.width, canvasElement.height, SNAKE_BODY_SIZE, SNAKE_BODY_SIZE);
     });
 
-    game.setDrawCallback(function (dt: number, state: any   ) {
-        var minTimeToDraw = state.game.minTimeToDraw;
-        if (state.game.fastMode) {
+    game.setDrawCallback(function (dt: number, state: GameState) {
+        let minTimeToDraw = state.minTimeToDraw;
+        if (state.fastMode) {
             minTimeToDraw /= 4;
         }
 
-        if (state.game.timeElapsedSinceLastRender < minTimeToDraw) {
+        if (state.timeElapsedSinceLastRender < minTimeToDraw) {
             return;
         }
 
 
-        state.game.timeElapsedSinceLastRender -= minTimeToDraw;
+        state.timeElapsedSinceLastRender -= minTimeToDraw;
 
         if (game.gameStatus == GameStatus.GAME_OVER || game.gameStatus == GameStatus.GAME_PAUSED) {
             return;
         }
 
-        var ctx: CanvasRenderingContext2D = game.canvasContext;
+        let ctx: CanvasRenderingContext2D = game.canvasContext;
 
-        var snake = state.game.snake;
-        var fruit = state.game.fruit;
+        let snake = state.snake;
+        let fruit = state.fruit;
 
         if (game.gameStatus == GameStatus.GAME_WILL_END) {
             ctx.fillText('Game Over!', 10, 20);
@@ -52,7 +67,7 @@ window.addEventListener('load', function () {
 
         ctx.save();
 
-        if (state.game.fastMode) {
+        if (state.fastMode) {
             ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
             ctx.strokeStyle = 'rgba(128, 0, 0, 1.0)';
         } else {
@@ -62,8 +77,8 @@ window.addEventListener('load', function () {
 
         ctx.fillRect(0, 0, game.canvasElement.width, game.canvasElement.height);
 
-        for (var i = 0; i < snake.body.length; i++) {
-            var block = snake.body[i];
+        for (let i = 0; i < snake.body.length; i++) {
+            let block = snake.body[i];
 
             ctx.strokeRect(block.x, block.y, block.width, block.height);
         }
@@ -74,7 +89,7 @@ window.addEventListener('load', function () {
         ctx.restore();
     })
 
-    game.setKeydownCallback(function(e: KeyboardEvent, state: any) {
+    game.setKeydownCallback(function(e: KeyboardEvent, state: GameState) {
         // ESC
         if (e.keyCode == 27) {
             if (game.gameStatus == GameStatus.GAME_RUNNING) {
@@ -85,21 +100,21 @@ window.addEventListener('load', function () {
         };
     });
 
-    game.setUpdateCallback(function(dt: number, state: any) {
+    game.setUpdateCallback(function(dt: number, state: GameState) {
         if (game.gameStatus == GameStatus.GAME_OVER) {
             return;
         }
 
-        state.game.timeElapsedSinceLastRender += dt;
+        state.timeElapsedSinceLastRender += dt;
 
-        let snake: Snake = state.game.snake;
-        let fruit: Rectangle = state.game.fruit;
+        let snake: Snake = state.snake;
+        let fruit: Rectangle = state.fruit;
 
         let canvasElement = game.canvasElement;
         let canvasWidth = canvasElement.width;
         let canvasHeight = canvasElement.height;
 
-        var head = snake.body[0];
+        let head = snake.body[0];
 
         (function checkBoudaries() {
             let MIN_X = 0,
@@ -114,7 +129,7 @@ window.addEventListener('load', function () {
 
         (function checkBodyCollision() {
             for (let i = 1; i < snake.body.length; i++) {
-                var rect = snake.body[i];
+                let rect = snake.body[i];
 
                 if (head.x == rect.x && head.y == rect.y) {
                     game.gameStatus = GameStatus.GAME_WILL_END;
@@ -127,30 +142,30 @@ window.addEventListener('load', function () {
             return;
         }
 
-        if (state.keyboard.left == true) {
+        if (game.coreState.keyboard.left == true) {
             snake.setMoviment(SnakeDirection.DIRECTION_LEFT);
             game.gameStatus = GameStatus.GAME_RUNNING;
-        } else if (state.keyboard.right == true) {
+        } else if (game.coreState.keyboard.right == true) {
             snake.setMoviment(SnakeDirection.DIRECTION_RIGHT);
             game.gameStatus = GameStatus.GAME_RUNNING;
-        } else if (state.keyboard.up == true) {
+        } else if (game.coreState.keyboard.up == true) {
             snake.setMoviment(SnakeDirection.DIRECTION_UP);
             game.gameStatus = GameStatus.GAME_RUNNING;
-        } else if (state.keyboard.down == true) {
+        } else if (game.coreState.keyboard.down == true) {
             snake.setMoviment(SnakeDirection.DIRECTION_DOWN);
             game.gameStatus = GameStatus.GAME_RUNNING;
         }
 
-        if (state.keyboard.space) {
-            state.game.fastMode = true;
+        if (game.coreState.keyboard.space) {
+            state.fastMode = true;
         } else {
-            state.game.fastMode = false;
+            state.fastMode = false;
         }
 
         if (head.x == fruit.x && head.y == fruit.y) {
             snake.eated = fruit;
 
-            state.game.fruit = Rectangle.createAtRandonPosition(canvasWidth, canvasHeight, snake.bodySize, snake.bodySize);
+            state.fruit = Rectangle.createAtRandonPosition(canvasWidth, canvasHeight, snake.bodySize, snake.bodySize);
         }
     });
 

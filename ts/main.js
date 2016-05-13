@@ -1,32 +1,36 @@
+var GameState = (function () {
+    function GameState() {
+    }
+    return GameState;
+}());
 window.addEventListener('load', function () {
     var CANVAS_ELEMENT_ID = 'mainCanvas';
     var game = new Game(CANVAS_ELEMENT_ID);
-    game.init(function (state) {
-        state.game = {
-            'timeElapsedSinceLastRender': 0,
-            'minTimeToDraw': 100,
-            'fastMode': false
-        };
+    game.gameState = new GameState();
+    game.init(function (gameState) {
+        gameState.timeElapsedSinceLastRender = 0;
+        gameState.minTimeToDraw = 100;
+        gameState.fastMode = false;
         var SNAKE_BODY_SIZE = 10;
         var canvasElement = game.canvasElement;
-        state.game.snake = new Snake(SNAKE_BODY_SIZE);
-        state.game.fruit = Rectangle.createAtRandonPosition(canvasElement.width, canvasElement.height, SNAKE_BODY_SIZE, SNAKE_BODY_SIZE);
+        gameState.snake = new Snake(SNAKE_BODY_SIZE);
+        gameState.fruit = Rectangle.createAtRandonPosition(canvasElement.width, canvasElement.height, SNAKE_BODY_SIZE, SNAKE_BODY_SIZE);
     });
     game.setDrawCallback(function (dt, state) {
-        var minTimeToDraw = state.game.minTimeToDraw;
-        if (state.game.fastMode) {
+        var minTimeToDraw = state.minTimeToDraw;
+        if (state.fastMode) {
             minTimeToDraw /= 4;
         }
-        if (state.game.timeElapsedSinceLastRender < minTimeToDraw) {
+        if (state.timeElapsedSinceLastRender < minTimeToDraw) {
             return;
         }
-        state.game.timeElapsedSinceLastRender -= minTimeToDraw;
+        state.timeElapsedSinceLastRender -= minTimeToDraw;
         if (game.gameStatus == GameStatus.GAME_OVER || game.gameStatus == GameStatus.GAME_PAUSED) {
             return;
         }
         var ctx = game.canvasContext;
-        var snake = state.game.snake;
-        var fruit = state.game.fruit;
+        var snake = state.snake;
+        var fruit = state.fruit;
         if (game.gameStatus == GameStatus.GAME_WILL_END) {
             ctx.fillText('Game Over!', 10, 20);
             game.gameStatus = GameStatus.GAME_OVER;
@@ -34,7 +38,7 @@ window.addEventListener('load', function () {
         }
         snake.move();
         ctx.save();
-        if (state.game.fastMode) {
+        if (state.fastMode) {
             ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
             ctx.strokeStyle = 'rgba(128, 0, 0, 1.0)';
         }
@@ -66,9 +70,9 @@ window.addEventListener('load', function () {
         if (game.gameStatus == GameStatus.GAME_OVER) {
             return;
         }
-        state.game.timeElapsedSinceLastRender += dt;
-        var snake = state.game.snake;
-        var fruit = state.game.fruit;
+        state.timeElapsedSinceLastRender += dt;
+        var snake = state.snake;
+        var fruit = state.fruit;
         var canvasElement = game.canvasElement;
         var canvasWidth = canvasElement.width;
         var canvasHeight = canvasElement.height;
@@ -90,31 +94,31 @@ window.addEventListener('load', function () {
         if (game.gameStatus == GameStatus.GAME_WILL_END) {
             return;
         }
-        if (state.keyboard.left == true) {
+        if (game.coreState.keyboard.left == true) {
             snake.setMoviment(SnakeDirection.DIRECTION_LEFT);
             game.gameStatus = GameStatus.GAME_RUNNING;
         }
-        else if (state.keyboard.right == true) {
+        else if (game.coreState.keyboard.right == true) {
             snake.setMoviment(SnakeDirection.DIRECTION_RIGHT);
             game.gameStatus = GameStatus.GAME_RUNNING;
         }
-        else if (state.keyboard.up == true) {
+        else if (game.coreState.keyboard.up == true) {
             snake.setMoviment(SnakeDirection.DIRECTION_UP);
             game.gameStatus = GameStatus.GAME_RUNNING;
         }
-        else if (state.keyboard.down == true) {
+        else if (game.coreState.keyboard.down == true) {
             snake.setMoviment(SnakeDirection.DIRECTION_DOWN);
             game.gameStatus = GameStatus.GAME_RUNNING;
         }
-        if (state.keyboard.space) {
-            state.game.fastMode = true;
+        if (game.coreState.keyboard.space) {
+            state.fastMode = true;
         }
         else {
-            state.game.fastMode = false;
+            state.fastMode = false;
         }
         if (head.x == fruit.x && head.y == fruit.y) {
             snake.eated = fruit;
-            state.game.fruit = Rectangle.createAtRandonPosition(canvasWidth, canvasHeight, snake.bodySize, snake.bodySize);
+            state.fruit = Rectangle.createAtRandonPosition(canvasWidth, canvasHeight, snake.bodySize, snake.bodySize);
         }
     });
     game.start();
