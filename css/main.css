@@ -22,13 +22,12 @@ a:hover {
 }
 
     .instrucao .hot-tip {
-        
+
     }
 
     .instrucao .hot-tip b {
         color: #C00;
         font-size: 1.15em;
-        transform: rotate(60deg);
     }
 
 .github .icone {
