@@ -5,11 +5,6 @@ class GameState {
 
     snake: Snake;
     fruit: Rectangle;
-
-
-    constructor () {
-
-    }
 }
 
 window.addEventListener('load', function () {
@@ -33,8 +28,9 @@ window.addEventListener('load', function () {
         gameState.fruit = Rectangle.createAtRandonPosition(canvasElement.width, canvasElement.height, SNAKE_BODY_SIZE, SNAKE_BODY_SIZE);
     });
 
-    game.setDrawCallback(function (dt: number, state: GameState) {
+    game.setDrawCallback(function (dt, state) {
         let minTimeToDraw = state.minTimeToDraw;
+
         if (state.fastMode) {
             minTimeToDraw /= 4;
         }
@@ -89,7 +85,7 @@ window.addEventListener('load', function () {
         ctx.restore();
     })
 
-    game.setKeydownCallback(function(e: KeyboardEvent, state: GameState) {
+    game.setKeydownCallback(function(e, state) {
         // ESC
         if (e.keyCode == 27) {
             if (game.gameStatus == GameStatus.GAME_RUNNING) {
@@ -100,7 +96,7 @@ window.addEventListener('load', function () {
         };
     });
 
-    game.setUpdateCallback(function(dt: number, state: GameState) {
+    game.setUpdateCallback(function(dt, state) {
         if (game.gameStatus == GameStatus.GAME_OVER) {
             return;
         }

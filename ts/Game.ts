@@ -22,14 +22,30 @@ class CoreState {
     }
 }
 
+interface InitCallback<T> {
+    (state: T) : void;
+}
+
+interface UpdateCallback<T> {
+    (dt: number, state: T) : void;
+}
+
+interface DrawCallback<T> {
+    (dt: number, state: T) : void;
+}
+
+interface KeydownCallback<T> {
+    (e: KeyboardEvent, state: T) : void;
+}
+
 class Game<T> {
     canvasId: string;
     canvasElement: HTMLCanvasElement;
     canvasContext: CanvasRenderingContext2D;
 
-    keydownCallback: Function;
-    updateCallback: Function;
-    drawCallback: Function;
+    updateCallback: UpdateCallback<T>;
+    drawCallback: DrawCallback<T>;
+    keydownCallback: KeydownCallback<T>;
 
     coreState: CoreState;
 
@@ -55,7 +71,7 @@ class Game<T> {
         this.coreState = new CoreState();
     }
 
-    init(initCallback: Function) {
+    init(initCallback: InitCallback<T>) {
         this.gameStatus = GameStatus.GAME_WAITING_TO_START;
 
         if (initCallback != null) {
@@ -69,7 +85,7 @@ class Game<T> {
         this.coreState;
 
         (function inputEventSetup() {
-            function preventScrolling(e) {
+            function preventScrolling(e: KeyboardEvent) : void {
                 if ([37, 38, 39, 40, 32].indexOf(e.keyCode) > -1) {
                     e.preventDefault();
                 }
@@ -116,7 +132,7 @@ class Game<T> {
             let accTime = 0;
             let previousTime = performance.now();
 
-            function gameloop(currentTime) {
+            function gameloop(currentTime: number) {
                 // delta time
                 let dt = currentTime - previousTime;
                 previousTime = currentTime;
@@ -131,15 +147,15 @@ class Game<T> {
         })();
     }
 
-    setUpdateCallback (updateCallback: Function) {
+    setUpdateCallback (updateCallback: UpdateCallback<T>) {
         this.updateCallback = updateCallback;
     };
 
-    setDrawCallback (drawCallback: Function) {
+    setDrawCallback (drawCallback: DrawCallback<T>) {
         this.drawCallback = drawCallback;
     };
 
-    setKeydownCallback (keydownCallback: Function) {
+    setKeydownCallback (keydownCallback: KeydownCallback<T>) {
         this.keydownCallback = keydownCallback;
     }
 }
