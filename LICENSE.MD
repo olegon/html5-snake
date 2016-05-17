@@ -1,12 +1,4 @@
-# HTML5 Snake
-
-Versão HTML5 do jogo Snake feito com Canvas, CanvasRenderingContext2D e TypeScript.
-
-Para jogar a última versão, acesse http://olegon.github.io/html5-snake/
-
-
-
-## The MIT License (MIT)
+# The MIT License (MIT)
 
 Copyright (c) 2016 Leandro Gonçalves de Oliveira
 
