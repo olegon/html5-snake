@@ -1,4 +1,4 @@
-var Rectangle = (function () {
+var Rectangle = /** @class */ (function () {
     function Rectangle(x, y, width, height) {
         this.x = x;
         this.y = y;

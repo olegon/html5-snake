@@ -1,4 +1,4 @@
-var GameState = (function () {
+var GameState = /** @class */ (function () {
     function GameState() {
     }
     return GameState;
@@ -36,6 +36,7 @@ window.addEventListener('load', function () {
             game.gameStatus = GameStatus.GAME_OVER;
             return;
         }
+        // Mover apenas de renderizar.
         snake.move();
         ctx.save();
         if (state.fastMode) {
@@ -56,6 +57,7 @@ window.addEventListener('load', function () {
         ctx.restore();
     });
     game.setKeydownCallback(function (e, state) {
+        // ESC
         if (e.keyCode == 27) {
             if (game.gameStatus == GameStatus.GAME_RUNNING) {
                 game.gameStatus = GameStatus.GAME_PAUSED;

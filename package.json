@@ -1,0 +1,24 @@
+{
+  "name": "html5-snake",
+  "version": "1.0.0",
+  "description": "Versão HTML5 do jogo Snake feito com Canvas, CanvasRenderingContext2D e TypeScript.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/olegon/html5-snake.git"
+  },
+  "keywords": [],
+  "author": "Leandro Gonçalves de Oliveira <olegon.main@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/olegon/html5-snake/issues"
+  },
+  "homepage": "https://github.com/olegon/html5-snake#readme",
+  "devDependencies": {
+    "typescript": "^4.2.4"
+  }
+}
