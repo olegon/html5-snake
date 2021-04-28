@@ -6,18 +6,18 @@ var GameStatus;
     GameStatus[GameStatus["GAME_RUNNING"] = 3] = "GAME_RUNNING";
     GameStatus[GameStatus["GAME_PAUSED"] = 4] = "GAME_PAUSED";
 })(GameStatus || (GameStatus = {}));
-var Keyboad = (function () {
+var Keyboad = /** @class */ (function () {
     function Keyboad() {
     }
     return Keyboad;
 }());
-var CoreState = (function () {
+var CoreState = /** @class */ (function () {
     function CoreState() {
         this.keyboard = new Keyboad();
     }
     return CoreState;
 }());
-var Game = (function () {
+var Game = /** @class */ (function () {
     function Game(canvasId) {
         this.canvasId = canvasId;
         this.canvasElement = window.document.getElementById(this.canvasId);
@@ -89,6 +89,7 @@ var Game = (function () {
             var accTime = 0;
             var previousTime = performance.now();
             function gameloop(currentTime) {
+                // delta time
                 var dt = currentTime - previousTime;
                 previousTime = currentTime;
                 if (self.updateCallback)

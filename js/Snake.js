@@ -5,7 +5,7 @@ var SnakeDirection;
     SnakeDirection[SnakeDirection["DIRECTION_RIGHT"] = 2] = "DIRECTION_RIGHT";
     SnakeDirection[SnakeDirection["DIRECTION_LEFT"] = 3] = "DIRECTION_LEFT";
 })(SnakeDirection || (SnakeDirection = {}));
-var Snake = (function () {
+var Snake = /** @class */ (function () {
     function Snake(bodySize) {
         this.x = 100;
         this.y = 100;
