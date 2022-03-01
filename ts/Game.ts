@@ -7,11 +7,11 @@ enum GameStatus {
 }
 
 class Keyboad {
-    left: boolean;
-    right: boolean;
-    up: boolean;
-    down: boolean;
-    space: boolean;
+    left = false;
+    right = false;
+    up = false;
+    down = false;
+    space = false;
 }
 
 class CoreState {
@@ -43,9 +43,9 @@ class Game<T> {
     canvasElement: HTMLCanvasElement;
     canvasContext: CanvasRenderingContext2D;
 
-    updateCallback: UpdateCallback<T>;
-    drawCallback: DrawCallback<T>;
-    keydownCallback: KeydownCallback<T>;
+    updateCallback: UpdateCallback<T> | null = null;
+    drawCallback: DrawCallback<T> | null = null;
+    keydownCallback: KeydownCallback<T> | null = null;
 
     coreState: CoreState;
 
@@ -53,22 +53,30 @@ class Game<T> {
 
     gameStatus: GameStatus;
 
-    constructor (canvasId: string) {
+    constructor (canvasId: string, gameState: T, gameStatus: GameStatus) {
         this.canvasId = canvasId;
 
-        this.canvasElement = <HTMLCanvasElement>window.document.getElementById(this.canvasId);
-
+        this.canvasElement = window.document.getElementById(this.canvasId) as HTMLCanvasElement;
         if (this.canvasElement == null) {
             throw new Error('O elemento com Id ' + this.canvasId + ' não existe.');
         }
 
-        this.canvasContext = this.canvasElement.getContext('2d');
+        const ctx = this.canvasElement.getContext('2d');
+
+        if (ctx == null) {
+            throw new Error('O contexto do canvas não pode ser obtido.');
+        }
+        this.canvasContext = ctx;
 
         if (this.canvasContext == null) {
             throw new Error("O elemento não existe.");
         }
 
         this.coreState = new CoreState();
+
+        this.gameState = gameState;
+
+        this.gameStatus = gameStatus;
     }
 
     init(initCallback: InitCallback<T>) {
@@ -80,7 +88,7 @@ class Game<T> {
     }
 
     start () {
-        let self = this;
+        const self = this;
 
         this.coreState;
 
@@ -129,12 +137,11 @@ class Game<T> {
         })();
 
         (function gameLoopSetup() {
-            let accTime = 0;
             let previousTime = performance.now();
 
             function gameloop(currentTime: number) {
                 // delta time
-                let dt = currentTime - previousTime;
+                const dt = currentTime - previousTime;
                 previousTime = currentTime;
 
                 if (self.updateCallback) self.updateCallback(dt, self.gameState);

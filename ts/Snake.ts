@@ -11,12 +11,12 @@ class Snake {
 
     body: Rectangle[];
 
-    eated: Rectangle;
+    eated: Rectangle | null = null;
 
     bodySize: number;
 
-    currentDirection: SnakeDirection;
-    nextDirection: SnakeDirection;
+    currentDirection: SnakeDirection | null = null;
+    nextDirection: SnakeDirection | null = null;
 
     constructor (bodySize: number) {
         this.x = 100;
@@ -64,6 +64,12 @@ class Snake {
 
         this.body[0].x += dx;
         this.body[0].y += dy;
+    }
+
+    draw(ctx: CanvasRenderingContext2D) {
+        for (const block of this.body) {
+            block.strokeRect(ctx);
+        }
     }
 
     setMoviment (direction: SnakeDirection) {

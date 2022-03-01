@@ -12,12 +12,16 @@ class Rectangle {
     }
 
     static createAtRandonPosition(max_x: number, max_y: number, width: number, height: number) {
-        let rnd_x = (Math.random() * 50000) % max_x;
-        let rnd_y = (Math.random() * 50000) % max_y;
+        const rnd_x = (Math.random() * 50000) % max_x;
+        const rnd_y = (Math.random() * 50000) % max_y;
 
-        let x = rnd_x - (rnd_x % width);
-        let y = rnd_y - (rnd_y % height);
+        const x = rnd_x - (rnd_x % width);
+        const y = rnd_y - (rnd_y % height);
 
         return new Rectangle(x, y, width, height);
+    }
+
+    strokeRect(ctx: CanvasRenderingContext2D) {   
+        ctx.strokeRect(this.x, this.y, this.width, this.height);
     }
 }

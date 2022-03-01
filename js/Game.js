@@ -1,3 +1,4 @@
+"use strict";
 var GameStatus;
 (function (GameStatus) {
     GameStatus[GameStatus["GAME_OVER"] = 0] = "GAME_OVER";
@@ -8,6 +9,11 @@ var GameStatus;
 })(GameStatus || (GameStatus = {}));
 var Keyboad = /** @class */ (function () {
     function Keyboad() {
+        this.left = false;
+        this.right = false;
+        this.up = false;
+        this.down = false;
+        this.space = false;
     }
     return Keyboad;
 }());
@@ -18,17 +24,26 @@ var CoreState = /** @class */ (function () {
     return CoreState;
 }());
 var Game = /** @class */ (function () {
-    function Game(canvasId) {
+    function Game(canvasId, gameState, gameStatus) {
+        this.updateCallback = null;
+        this.drawCallback = null;
+        this.keydownCallback = null;
         this.canvasId = canvasId;
         this.canvasElement = window.document.getElementById(this.canvasId);
         if (this.canvasElement == null) {
             throw new Error('O elemento com Id ' + this.canvasId + ' não existe.');
         }
-        this.canvasContext = this.canvasElement.getContext('2d');
+        var ctx = this.canvasElement.getContext('2d');
+        if (ctx == null) {
+            throw new Error('O contexto do canvas não pode ser obtido.');
+        }
+        this.canvasContext = ctx;
         if (this.canvasContext == null) {
             throw new Error("O elemento não existe.");
         }
         this.coreState = new CoreState();
+        this.gameState = gameState;
+        this.gameStatus = gameStatus;
     }
     Game.prototype.init = function (initCallback) {
         this.gameStatus = GameStatus.GAME_WAITING_TO_START;
@@ -86,7 +101,6 @@ var Game = /** @class */ (function () {
             });
         })();
         (function gameLoopSetup() {
-            var accTime = 0;
             var previousTime = performance.now();
             function gameloop(currentTime) {
                 // delta time

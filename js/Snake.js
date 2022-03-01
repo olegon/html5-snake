@@ -1,3 +1,4 @@
+"use strict";
 var SnakeDirection;
 (function (SnakeDirection) {
     SnakeDirection[SnakeDirection["DIRECTION_UP"] = 0] = "DIRECTION_UP";
@@ -7,6 +8,9 @@ var SnakeDirection;
 })(SnakeDirection || (SnakeDirection = {}));
 var Snake = /** @class */ (function () {
     function Snake(bodySize) {
+        this.eated = null;
+        this.currentDirection = null;
+        this.nextDirection = null;
         this.x = 100;
         this.y = 100;
         this.bodySize = bodySize;
@@ -44,6 +48,12 @@ var Snake = /** @class */ (function () {
         }
         this.body[0].x += dx;
         this.body[0].y += dy;
+    };
+    Snake.prototype.draw = function (ctx) {
+        for (var _i = 0, _a = this.body; _i < _a.length; _i++) {
+            var block = _a[_i];
+            block.strokeRect(ctx);
+        }
     };
     Snake.prototype.setMoviment = function (direction) {
         if (direction == SnakeDirection.DIRECTION_LEFT && this.currentDirection == SnakeDirection.DIRECTION_RIGHT) {
