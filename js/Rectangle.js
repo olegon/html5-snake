@@ -1,3 +1,4 @@
+"use strict";
 var Rectangle = /** @class */ (function () {
     function Rectangle(x, y, width, height) {
         this.x = x;
@@ -11,6 +12,9 @@ var Rectangle = /** @class */ (function () {
         var x = rnd_x - (rnd_x % width);
         var y = rnd_y - (rnd_y % height);
         return new Rectangle(x, y, width, height);
+    };
+    Rectangle.prototype.strokeRect = function (ctx) {
+        ctx.strokeRect(this.x, this.y, this.width, this.height);
     };
     return Rectangle;
 }());

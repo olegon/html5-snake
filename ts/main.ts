@@ -1,27 +1,23 @@
 class GameState {
-    timeElapsedSinceLastRender: number;
-    minTimeToDraw: number;
-    fastMode: boolean;
+    timeElapsedSinceLastRender = 0;
+    minTimeToDraw = 0;
+    fastMode = false;
 
-    snake: Snake;
-    fruit: Rectangle;
+    snake: Snake | null = null;
+    fruit: Rectangle | null = null;
 }
 
 window.addEventListener('load', function () {
-    let CANVAS_ELEMENT_ID = 'mainCanvas';
-
-    let game = new Game<GameState>(CANVAS_ELEMENT_ID);
-    game.gameState = new GameState();
+    const CANVAS_ELEMENT_ID = 'mainCanvas';
+    const game = new Game<GameState>(CANVAS_ELEMENT_ID, new GameState(), GameStatus.GAME_WAITING_TO_START);
 
     game.init(function (gameState: GameState) {
-
-
         gameState.timeElapsedSinceLastRender = 0;
         gameState.minTimeToDraw = 100;
         gameState.fastMode = false;
 
-        let SNAKE_BODY_SIZE = 10;
-        let canvasElement = game.canvasElement;
+        const SNAKE_BODY_SIZE = 10;
+        const canvasElement = game.canvasElement;
 
         gameState.snake = new Snake(SNAKE_BODY_SIZE);
 
@@ -32,7 +28,7 @@ window.addEventListener('load', function () {
         let minTimeToDraw = state.minTimeToDraw;
 
         if (state.fastMode) {
-            minTimeToDraw /= 4;
+            minTimeToDraw /= 10;
         }
 
         if (state.timeElapsedSinceLastRender < minTimeToDraw) {
@@ -46,10 +42,7 @@ window.addEventListener('load', function () {
             return;
         }
 
-        let ctx: CanvasRenderingContext2D = game.canvasContext;
-
-        let snake = state.snake;
-        let fruit = state.fruit;
+        const ctx: CanvasRenderingContext2D = game.canvasContext;
 
         if (game.gameStatus == GameStatus.GAME_WILL_END) {
             ctx.fillText('Game Over!', 10, 20);
@@ -59,9 +52,11 @@ window.addEventListener('load', function () {
         }
 
         // Mover apenas de renderizar.
-        snake.move();
+        state.snake?.move();
 
         ctx.save();
+
+        ctx.fillRect(0, 0, game.canvasElement.width, game.canvasElement.height);
 
         if (state.fastMode) {
             ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
@@ -71,16 +66,8 @@ window.addEventListener('load', function () {
             ctx.strokeStyle = 'rgba(0, 0, 0, 1.0)';
         }
 
-        ctx.fillRect(0, 0, game.canvasElement.width, game.canvasElement.height);
-
-        for (let i = 0; i < snake.body.length; i++) {
-            let block = snake.body[i];
-
-            ctx.strokeRect(block.x, block.y, block.width, block.height);
-        }
-
         ctx.strokeStyle = 'rgba(0, 0, 0, 1.0)';
-        ctx.strokeRect(fruit.x, fruit.y, fruit.width, fruit.height);
+        state.fruit?.strokeRect(ctx);
 
         ctx.restore();
     })
@@ -103,17 +90,19 @@ window.addEventListener('load', function () {
 
         state.timeElapsedSinceLastRender += dt;
 
-        let snake: Snake = state.snake;
-        let fruit: Rectangle = state.fruit;
+        if (state.snake == null || state.fruit == null) return;
 
-        let canvasElement = game.canvasElement;
-        let canvasWidth = canvasElement.width;
-        let canvasHeight = canvasElement.height;
+        const snake: Snake = state.snake;
+        const fruit: Rectangle = state.fruit;
 
-        let head = snake.body[0];
+        const canvasElement = game.canvasElement;
+        const canvasWidth = canvasElement.width;
+        const canvasHeight = canvasElement.height;
+
+        const head = snake.body[0];
 
         (function checkBoudaries() {
-            let MIN_X = 0,
+            const MIN_X = 0,
                 MAX_X = canvasWidth,
                 MIN_Y = 0,
                 MAX_Y = canvasHeight;
@@ -125,14 +114,13 @@ window.addEventListener('load', function () {
 
         (function checkBodyCollision() {
             for (let i = 1; i < snake.body.length; i++) {
-                let rect = snake.body[i];
+                const rect = snake.body[i];
 
                 if (head.x == rect.x && head.y == rect.y) {
                     game.gameStatus = GameStatus.GAME_WILL_END;
                 }
             }
         })();
-
 
         if (game.gameStatus == GameStatus.GAME_WILL_END) {
             return;
