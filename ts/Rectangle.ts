@@ -21,7 +21,7 @@ class Rectangle {
         return new Rectangle(x, y, width, height);
     }
 
-    strokeRect(ctx: CanvasRenderingContext2D) {   
+    strokeRect(ctx: CanvasRenderingContext2D): void {   
         ctx.strokeRect(this.x, this.y, this.width, this.height);
     }
 }

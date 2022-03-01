@@ -9,7 +9,7 @@ class GameState {
 
 window.addEventListener('load', function () {
     const CANVAS_ELEMENT_ID = 'mainCanvas';
-    const game = new Game<GameState>(CANVAS_ELEMENT_ID, new GameState(), GameStatus.GAME_WAITING_TO_START);
+    const game = new Game(CANVAS_ELEMENT_ID, new GameState(), GameStatus.GAME_WAITING_TO_START);
 
     game.init(function (gameState: GameState) {
         gameState.timeElapsedSinceLastRender = 0;
@@ -56,6 +56,7 @@ window.addEventListener('load', function () {
 
         ctx.save();
 
+        ctx.fillStyle = 'rgba(255, 255, 255, 1.0)';
         ctx.fillRect(0, 0, game.canvasElement.width, game.canvasElement.height);
 
         if (state.fastMode) {
@@ -65,6 +66,8 @@ window.addEventListener('load', function () {
             ctx.fillStyle = 'rgba(255, 255, 255, 1.0)';
             ctx.strokeStyle = 'rgba(0, 0, 0, 1.0)';
         }
+        state.snake?.draw(ctx);
+
 
         ctx.strokeStyle = 'rgba(0, 0, 0, 1.0)';
         state.fruit?.strokeRect(ctx);
@@ -73,8 +76,7 @@ window.addEventListener('load', function () {
     })
 
     game.setKeydownCallback(function(e, state) {
-        // ESC
-        if (e.keyCode == 27) {
+        if (e.code == "Escape") {
             if (game.gameStatus == GameStatus.GAME_RUNNING) {
                 game.gameStatus = GameStatus.GAME_PAUSED;
             } else if (game.gameStatus == GameStatus.GAME_PAUSED) {

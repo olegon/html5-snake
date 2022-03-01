@@ -66,13 +66,13 @@ class Snake {
         this.body[0].y += dy;
     }
 
-    draw(ctx: CanvasRenderingContext2D) {
+    draw(ctx: CanvasRenderingContext2D): void {
         for (const block of this.body) {
             block.strokeRect(ctx);
         }
     }
 
-    setMoviment (direction: SnakeDirection) {
+    setMoviment (direction: SnakeDirection): void {
         if (direction == SnakeDirection.DIRECTION_LEFT && this.currentDirection == SnakeDirection.DIRECTION_RIGHT) {
             return;
         }

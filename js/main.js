@@ -22,7 +22,7 @@ window.addEventListener('load', function () {
         gameState.fruit = Rectangle.createAtRandonPosition(canvasElement.width, canvasElement.height, SNAKE_BODY_SIZE, SNAKE_BODY_SIZE);
     });
     game.setDrawCallback(function (dt, state) {
-        var _a, _b;
+        var _a, _b, _c;
         var minTimeToDraw = state.minTimeToDraw;
         if (state.fastMode) {
             minTimeToDraw /= 10;
@@ -43,6 +43,7 @@ window.addEventListener('load', function () {
         // Mover apenas de renderizar.
         (_a = state.snake) === null || _a === void 0 ? void 0 : _a.move();
         ctx.save();
+        ctx.fillStyle = 'rgba(255, 255, 255, 1.0)';
         ctx.fillRect(0, 0, game.canvasElement.width, game.canvasElement.height);
         if (state.fastMode) {
             ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
@@ -52,13 +53,13 @@ window.addEventListener('load', function () {
             ctx.fillStyle = 'rgba(255, 255, 255, 1.0)';
             ctx.strokeStyle = 'rgba(0, 0, 0, 1.0)';
         }
+        (_b = state.snake) === null || _b === void 0 ? void 0 : _b.draw(ctx);
         ctx.strokeStyle = 'rgba(0, 0, 0, 1.0)';
-        (_b = state.fruit) === null || _b === void 0 ? void 0 : _b.strokeRect(ctx);
+        (_c = state.fruit) === null || _c === void 0 ? void 0 : _c.strokeRect(ctx);
         ctx.restore();
     });
     game.setKeydownCallback(function (e, state) {
-        // ESC
-        if (e.keyCode == 27) {
+        if (e.code == "Escape") {
             if (game.gameStatus == GameStatus.GAME_RUNNING) {
                 game.gameStatus = GameStatus.GAME_PAUSED;
             }

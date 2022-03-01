@@ -17,11 +17,11 @@ var Keyboad = /** @class */ (function () {
     }
     return Keyboad;
 }());
-var CoreState = /** @class */ (function () {
-    function CoreState() {
+var InternalState = /** @class */ (function () {
+    function InternalState() {
         this.keyboard = new Keyboad();
     }
-    return CoreState;
+    return InternalState;
 }());
 var Game = /** @class */ (function () {
     function Game(canvasId, gameState, gameStatus) {
@@ -41,7 +41,7 @@ var Game = /** @class */ (function () {
         if (this.canvasContext == null) {
             throw new Error("O elemento não existe.");
         }
-        this.coreState = new CoreState();
+        this.coreState = new InternalState();
         this.gameState = gameState;
         this.gameStatus = gameStatus;
     }
@@ -56,25 +56,27 @@ var Game = /** @class */ (function () {
         this.coreState;
         (function inputEventSetup() {
             function preventScrolling(e) {
-                if ([37, 38, 39, 40, 32].indexOf(e.keyCode) > -1) {
+                if (['ArrowLeft', 'ArrowUp', 'ArrowRight', 'ArrowDown', 'Space'].indexOf(e.code) > -1) {
                     e.preventDefault();
                 }
             }
             window.addEventListener('keydown', function (e) {
-                if (e.keyCode === 37) {
-                    self.coreState.keyboard.left = true;
-                }
-                else if (e.keyCode === 38) {
-                    self.coreState.keyboard.up = true;
-                }
-                else if (e.keyCode === 39) {
-                    self.coreState.keyboard.right = true;
-                }
-                else if (e.keyCode === 40) {
-                    self.coreState.keyboard.down = true;
-                }
-                else if (e.keyCode === 32) {
-                    self.coreState.keyboard.space = true;
+                switch (e.code) {
+                    case "ArrowLeft":
+                        self.coreState.keyboard.left = true;
+                        break;
+                    case "ArrowUp":
+                        self.coreState.keyboard.up = true;
+                        break;
+                    case "ArrowRight":
+                        self.coreState.keyboard.right = true;
+                        break;
+                    case "ArrowDown":
+                        self.coreState.keyboard.down = true;
+                        break;
+                    case "Space":
+                        self.coreState.keyboard.space = true;
+                        break;
                 }
                 if (self.keydownCallback) {
                     self.keydownCallback(e, self.gameState);
@@ -82,20 +84,22 @@ var Game = /** @class */ (function () {
                 preventScrolling(e);
             });
             window.addEventListener('keyup', function (e) {
-                if (e.keyCode === 37) {
-                    self.coreState.keyboard.left = false;
-                }
-                else if (e.keyCode === 38) {
-                    self.coreState.keyboard.up = false;
-                }
-                else if (e.keyCode === 39) {
-                    self.coreState.keyboard.right = false;
-                }
-                else if (e.keyCode === 40) {
-                    self.coreState.keyboard.down = false;
-                }
-                else if (e.keyCode === 32) {
-                    self.coreState.keyboard.space = false;
+                switch (e.code) {
+                    case "ArrowLeft":
+                        self.coreState.keyboard.left = false;
+                        break;
+                    case "ArrowUp":
+                        self.coreState.keyboard.up = false;
+                        break;
+                    case "ArrowRight":
+                        self.coreState.keyboard.right = false;
+                        break;
+                    case "ArrowDown":
+                        self.coreState.keyboard.down = false;
+                        break;
+                    case "Space":
+                        self.coreState.keyboard.space = false;
+                        break;
                 }
                 preventScrolling(e);
             });
